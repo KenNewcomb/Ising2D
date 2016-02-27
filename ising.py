@@ -25,6 +25,7 @@ energy = lattice.getEnergy()
 
 energies = []
 average_spins = []
+print("Running {0}x{1} Ising Lattice for J = {2}, T = {3}.".format(length, width, J, temp))
 for step in range(0, steps):
     # Flip spins
     lattice.flip(1)
