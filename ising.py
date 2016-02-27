@@ -20,9 +20,9 @@ except:
 
 # Create spin lattice, randomize spins, and evaluate initial energy.
 lattice = Lattice(length, width, J)
-lattice.randomize()
+#lattice.randomize()
 energy = lattice.getEnergy()
-numspins = 5
+numspins = 30
 
 energies = []
 for step in range(0, steps):
@@ -32,18 +32,25 @@ for step in range(0, steps):
     # Evaluate new energy
     newenergy = lattice.getEnergy()
 
-    # Check energy difference
+    # if Enew <= E, accept
     if newenergy <= energy:
         energy = newenergy
-        # sample
         energies.append(energy)
+    # if Enew > E, accept with Boltzmann probability.
     else:
         x = random.random()
         if x <= math.exp(-(newenergy - energy)/(temp)):
             energy = newenergy
-            # sample
             energies.append(energy)
         else:
             energies.append(energy)
-    sys.stdout.write('\rEnergy: {0}'.format(energy))
+    sys.stdout.write('\rStep: {0}/{1}, Energy: {2}'.format(step, steps, energy))
     sys.stdout.flush()
+print("\nSimulation complete.")
+
+# Write data
+with open('data', 'w') as datafile:
+    for step in range(0, steps):
+        datafile.write('{0} {1}\n'.format(step, energies[step]))
+datafile.close()
+print("Data written to ./data.")
