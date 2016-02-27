@@ -20,14 +20,14 @@ except:
 
 # Create spin lattice, randomize spins, and evaluate initial energy.
 lattice = Lattice(length, width, J)
-#lattice.randomize()
+lattice.randomize()
 energy = lattice.getEnergy()
-numspins = 30
 
 energies = []
+average_spins = []
 for step in range(0, steps):
     # Flip spins
-    lattice.flip(numspins)
+    lattice.flip(1)
 
     # Evaluate new energy
     newenergy = lattice.getEnergy()
@@ -39,18 +39,28 @@ for step in range(0, steps):
     # if Enew > E, accept with Boltzmann probability.
     else:
         x = random.random()
-        if x <= math.exp(-(newenergy - energy)/(temp)):
+        boltzmann = math.exp(-(newenergy - energy)/(temp))
+        if x <= boltzmann:
             energy = newenergy
             energies.append(energy)
         else:
+            lattice.revert()
             energies.append(energy)
-    sys.stdout.write('\rStep: {0}/{1}, Energy: {2}'.format(step, steps, energy))
+
+    # Calculate average spin
+    average_spins.append(lattice.getAverageSpin())
+
+    sys.stdout.write('\rStep: {0}/{1}, Energy: {2}.'.format(step, steps, energy))
     sys.stdout.flush()
 print("\nSimulation complete.")
 
+print(lattice.getSpins())
 # Write data
-with open('data', 'w') as datafile:
-    for step in range(0, steps):
-        datafile.write('{0} {1}\n'.format(step, energies[step]))
-datafile.close()
-print("Data written to ./data.")
+energyfile = open('energy', 'w')
+spinfile   = open('spin', 'w')
+for step in range(0, steps):
+    energyfile.write('{0} {1}\n'.format(step, energies[step]))
+    spinfile.write('{0} {1}\n   '.format(step, average_spins[step]))
+energyfile.close()
+spinfile.close()
+print("Data written.")
