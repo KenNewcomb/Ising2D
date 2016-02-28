@@ -31,42 +31,29 @@ class Lattice:
 
     def getNNSpins(self, i, j):
         '''Gets the nearest neighbor spins to a given spin.'''
-        left = 0
-        right = 0
-        top = 0
-        bottom = 0
-
+        # Top neighbor
         if i == 0:
-            if j == 0:
-                left   = self.spins[i, self.width-1]
-                top    = self.spins[self.length-1, j]
-            elif j == self.width - 1:
-                right  = self.spins[i, 1]
-                top    = self.spins[self.length-1, j]
-            else:
-                top    = self.spins[self.length-1, j]
-        elif i == self.length-1:
-            if j == 0:
-                left   = self.spins[i, self.width-1]
-                bottom = self.spins[0, j]
-            elif j == self.width - 1:
-                right  = self.spins[i, 0]
-                bottom = self.spins[0, j]
-            else:
-                bottom = self.spins[0, j]
+            top = self.spins[self.length-1, j]
+        else:
+            top = self.spins[i-1, j]
+
+        # Bottom neighbor
+        if i == self.length-1:
+            bottom = self.spins[0, j]
+        else:
+            bottom = self.spins[i+1, j]
+
+        # Left neighbor
         if j == 0:
             left = self.spins[i, self.width-1]
-        elif j == self.width-1:
-            right = self.spins[i, 0]
+        else:
+            left = self.spins[i, j-1]
 
-        if left == 0:
-            left   = self.spins[i, j-1]
-        if right == 0:
-            right  = self.spins[i, j+1]
-        if top == 0:
-            top    = self.spins[i-1, j]
-        if bottom == 0:
-            bottom = self.spins[i+1, j]
+        # Right neighbor
+        if j == self.width-1:
+            right = self.spins[i, 0]
+        else:
+            right = self.spins[i, j+1]
 
         return(left + right + top + bottom)
 

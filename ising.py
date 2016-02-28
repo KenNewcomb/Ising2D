@@ -28,7 +28,7 @@ average_spins = []
 print("Simulating {0}x{1} Ising lattice for J = {2}, T = {3}.".format(length, width, J, temp))
 for step in range(0, steps):
     # Flip spins
-    lattice.flip(1)
+    lattice.flip(2)
 
     # Evaluate new energy
     newenergy = lattice.getEnergy()
