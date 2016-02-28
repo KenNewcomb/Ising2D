@@ -25,7 +25,7 @@ energy = lattice.getEnergy()
 
 energies = []
 average_spins = []
-print("Running {0}x{1} Ising Lattice for J = {2}, T = {3}.".format(length, width, J, temp))
+print("Simulating {0}x{1} Ising lattice for J = {2}, T = {3}.".format(length, width, J, temp))
 for step in range(0, steps):
     # Flip spins
     lattice.flip(1)
@@ -36,19 +36,17 @@ for step in range(0, steps):
     # if Enew <= E, accept
     if newenergy <= energy:
         energy = newenergy
-        energies.append(energy)
     # if Enew > E, accept with Boltzmann probability.
     else:
         x = random.random()
         boltzmann = math.exp(-(newenergy - energy)/(temp))
         if x <= boltzmann:
             energy = newenergy
-            energies.append(energy)
         else:
             lattice.revert()
-            energies.append(energy)
 
-    # Calculate average spin
+    # Calculate energy and average spin
+    energies.append(energy)
     average_spins.append(lattice.getAverageSpin())
 
     sys.stdout.write('\rStep: {0}/{1}, Energy: {2}.'.format(step, steps, energy))
