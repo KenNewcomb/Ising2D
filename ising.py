@@ -5,16 +5,17 @@ import math
 from classes.lattice import Lattice
 
 def usage():
-    print("usage: python3 ising.py length width J temperature steps")
+    print("usage: python3 ising.py length width J temperature steps numflips")
     exit()
 
 # Parse user input
 try:
-    length = int(sys.argv[1])
-    width  = int(sys.argv[2])
-    J      = float(sys.argv[3])
-    temp   = float(sys.argv[4])
-    steps  = int(sys.argv[5])
+    length   = int(sys.argv[1]) # lattice length
+    width    = int(sys.argv[2]) # lattice width
+    J        = float(sys.argv[3]) # Magnetic coupling
+    temp     = float(sys.argv[4]) # Temperature
+    steps    = int(sys.argv[5]) # Number of MC steps
+    numflips = int(sys.argv[6]) # Number of spin flips per step.
 except:
     usage()
 
@@ -28,7 +29,7 @@ average_spins = []
 print("Simulating {0}x{1} Ising lattice for J = {2}, T = {3}.".format(length, width, J, temp))
 for step in range(0, steps):
     # Flip spins
-    lattice.flip(2)
+    lattice.flip(numflips)
 
     # Evaluate new energy
     newenergy = lattice.getEnergy()
