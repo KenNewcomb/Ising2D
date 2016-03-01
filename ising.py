@@ -28,23 +28,29 @@ energies = []
 average_spins = []
 print("Simulating {0}x{1} Ising lattice for J = {2}, T = {3}.".format(length, width, J, temp))
 for step in range(0, steps):
-    # Flip spins
-    lattice.flip(numflips)
+    # Generate random spins to flip
+    spinlist = lattice.genSpins(numflips)
 
-    # Evaluate new energy
-    newenergy = lattice.getEnergy()
+    # Sum of delta E's due to flipping each spin.
+    deltaE = 0
+    for spin in spinlist:
+        spinenergy = lattice.getSpinEnergy(spin)
+        lattice.flip(spin)
+        newspinenergy = lattice.getSpinEnergy(spin)
+        deltaE += newspinenergy - spinenergy
+    deltaE *= -J
 
     # if Enew <= E, accept
-    if newenergy <= energy:
-        energy = newenergy
+    if deltaE < 0:
+        energy += deltaE
     # if Enew > E, accept with Boltzmann probability.
     else:
         x = random.random()
-        boltzmann = math.exp(-(newenergy - energy)/(temp))
+        boltzmann = math.exp(-deltaE/(temp))
         if x <= boltzmann:
-            energy = newenergy
+            energy += deltaE
         else:
-            lattice.revert()
+            lattice.revert(spinlist)
 
     # Calculate energy and average spin
     energies.append(energy)

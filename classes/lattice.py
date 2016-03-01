@@ -1,14 +1,12 @@
 ''' lattice.py: represents a Lattice object. '''
 import numpy as np
 import random
-import copy
 
 class Lattice:
     def __init__(self, length, width, J):
         self.length = length
         self.width  = width
         self.J = J
-        self.oldspins = np.ones((length, width), dtype=np.int)
         self.spins = np.ones((length, width), dtype=np.int)
 
     def randomize(self):
@@ -17,17 +15,23 @@ class Lattice:
             for j in range(0, self.width):
                 self.spins[i,j] = random.choice([-1,1])
 
-    def flip(self, numspins):
-        '''Flip numspins.'''
-        self.oldspins = copy.copy(self.spins)
+    def genSpins(self, numspins):
+        '''Generate a unique list of spins to be flipped.'''
+        spinlist = []
         for spin in range(0, numspins):
             i = random.randint(0, self.length-1)
             j = random.randint(0, self.width-1)
-            flipvalue = random.choice([-1,1])
-            self.spins[i,j] = flipvalue
+            if (i, j) not in spinlist:
+                spinlist.append((i, j))
+            return spinlist
 
-    def revert(self):
-        self.spins = copy.copy(self.oldspins)
+    def flip(self, spin):
+        '''Flip spin (i, j).'''
+        self.spins[spin[0],spin[1]] *= -1
+
+    def revert(self, spinlist):
+        for spin in spinlist:
+            self.spins[spin[0], spin[1]] *= -1
 
     def getNNSpins(self, i, j):
         '''Gets the nearest neighbor spins to a given spin.'''
@@ -56,6 +60,9 @@ class Lattice:
             right = self.spins[i, j+1]
 
         return(left + right + top + bottom)
+
+    def getSpinEnergy(self, spin):
+        return self.spins[spin[0],spin[1]]*self.getNNSpins(spin[0],spin[1])
 
     def getEnergy(self):
         '''Get the lattice energy.'''
