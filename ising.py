@@ -63,16 +63,16 @@ print("\nSimulation complete.")
 
 print(lattice.getSpins())
 # Write data
-energyfile  = open('energy', 'w')
-spinfile    = open('spin', 'w')
-magnetfile  = open('magnetization', 'w')
-magsucfile  = open('mag_suscept', 'w')
+energyfile  = open('results/energy{0}_{1}'.format(length, temp), 'w')
+spinfile    = open('results/spin{0}_{1}'.format(length, temp), 'w')
+magnetfile  = open('results/magnetization{0}_{1}'.format(length, temp), 'w')
+magsucfile  = open('results/mag_suscept{0}_{1}'.format(length, temp), 'w')
 for step in range(0, steps):
     energyfile.write('{0} {1}\n'.format(step, energies[step]))
     spinfile.write('{0} {1}\n   '.format(step, average_spins[step]))
 # Average the average spin over last 10 frames
-ave_mag    = statistics.mean(average_spins[-50000:])
-ave_mag_sq = statistics.mean([i ** 2 for i in average_spins[-50000:]])
+ave_mag    = statistics.mean(average_spins[-100000:])
+ave_mag_sq = statistics.mean([i ** 2 for i in average_spins[-100000:]])
 magsucfile.write('{0}'.format((ave_mag_sq-ave_mag)/temp))
 magnetfile.write('{0}'.format(ave_mag))
 magnetfile.close()
